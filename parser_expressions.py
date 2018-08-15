@@ -7,7 +7,7 @@ class Parser:
 
     def next_word(self):
         self.token_index += 1
-        print("next word {0}".format(self.get_word()))
+        # print("next word {0}".format(self.get_word()))
         return self.get_word()
 
     def get_word(self):
@@ -17,23 +17,24 @@ class Parser:
     def fail(self):
         raise Exception("Syntax Error in token '{0}'".format(self.get_word()))
 
-    # TODO each NonTerminal should return an entire sub tree
     def parse(self):
         expr = self.Expr()
         if expr != None:
             if self.get_word() == 'eof':
                 return expr
 
+        # In parsers that have backtracking you need to return None
+        # indicating that the branch failed
         self.fail()
 
     # Expr ->  Term EPrime
     def Expr(self):
-        print("Expr ->  Term EPrime")
+        # print("Expr ->  Term EPrime")
         return {'EXPR': [self.Term(), self.EPrime()]}
 
     # Term -> Factor TPrime
     def Term(self):
-        print("Term -> Factor TPrime")
+        # print("Term -> Factor TPrime")
         return {'TERM': [self.Factor(), self.TPrime()]}
 
     def EPrime(self):
@@ -70,10 +71,10 @@ class Parser:
         self.fail()
 
     def Factor(self):
-        print('Factor')
+        # print('Factor')
         # Factor -> ( Expr )
         if self.get_word() == '(':
-            print("Factor -> ( Expr )")
+            # print("Factor -> ( Expr )")
             self.next_word()
             expr = self.Expr()
             if not self.get_word() == ')':
@@ -85,7 +86,7 @@ class Parser:
         # Factor -> name
         word = self.get_word()
         if word == 'num' or word == 'name':
-            print("Factor -> num | name")
+            # print("Factor -> num | name")
             self.next_word()
             return {'FACTOR': word}
 
@@ -112,6 +113,6 @@ assert parser.next_word() == tokens[5]
 
 parser = Parser(tokens)
 res = parser.parse()
-print(tokens)
+print('input:', tokens)
 print(json.dumps(res, indent=2))
 assert res != None
