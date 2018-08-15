@@ -1,3 +1,4 @@
+import json
 
 class Parser:
     def __init__(self, tokens):
@@ -28,12 +29,12 @@ class Parser:
     # Expr ->  Term EPrime
     def Expr(self):
         print("Expr ->  Term EPrime")
-        return ['TYPE: EXPR', self.Term(), self.EPrime()]
+        return {'EXPR': [self.Term(), self.EPrime()]}
 
     # Term -> Factor TPrime
     def Term(self):
         print("Term -> Factor TPrime")
-        return ['TYPE: TERM', self.Factor(), self.TPrime()]
+        return {'TERM': [self.Factor(), self.TPrime()]}
 
     def EPrime(self):
         # EPrime -> + Term EPrime
@@ -41,13 +42,13 @@ class Parser:
         word = self.get_word()
         if word == '+' or word == '-':
             self.next_word()
-            return ['TYPE: EPRIME', word, self.Term(), self.EPrime()]
+            return {'EPRIME': [word, self.Term(), self.EPrime()]}
 
 
         # EPrime -> Lambda
         # check the follow of EPrime
         if self.get_word() == ')' or self.get_word() == 'eof':
-            return ['TYPE: EPRIME']
+            return {'EPRIME': []}
 
         self.fail()
 
@@ -57,14 +58,14 @@ class Parser:
         word = self.get_word()
         if word == 'x' or word == '/':
             self.next_word()
-            return ['TYPE: TPRIME', word, self.Factor(), self.TPrime()]
+            return {'TPRIME': [word, self.Factor(), self.TPrime()]}
 
 
         # TPrime -> Lambda
         # check the follow of TPrime
         word = self.get_word()
         if word == ')' or word == 'eof' or word == '+' or word == '-':
-            return ['TYPE: TPRIME']
+            return {'TPRIME': []}
 
         self.fail()
 
@@ -78,7 +79,7 @@ class Parser:
             if not self.get_word() == ')':
                 self.fail()
             self.next_word()
-            return ['TYPE: FACTOR', expr]
+            return {'FACTOR': expr}
 
         # Factor -> num
         # Factor -> name
@@ -86,7 +87,7 @@ class Parser:
         if word == 'num' or word == 'name':
             print("Factor -> num | name")
             self.next_word()
-            return ['TYPE: FACTOR', word]
+            return {'FACTOR': word}
 
         self.fail()
 
@@ -111,5 +112,6 @@ assert parser.next_word() == tokens[5]
 
 parser = Parser(tokens)
 res = parser.parse()
-print(res)
+print(tokens)
+print(json.dumps(res, indent=2))
 assert res != None
