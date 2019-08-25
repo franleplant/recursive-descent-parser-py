@@ -3,12 +3,14 @@
 # This meant for early students with litle knowledge of programming
 import json
 
-from parser_base import BaseParser
-
 # grammar:
 # S -> aSa | aa
 def Parser(tokens):
     self = {
+        # What I use when teaching
+        # - tokens
+        # - token_index
+        # - error
         'backtrack_id': 0,
         'tokens': tokens,
         'token_index': 0,
@@ -53,8 +55,6 @@ def Parser(tokens):
         return result
 
     def S():
-        result = None
-
         backtrack_pivot = get_token_index()
         backtrack_id = get_backtrack_id()
 
