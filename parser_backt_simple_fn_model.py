@@ -57,6 +57,8 @@ def Parser(tokens):
 
             elif es_no_terminal(simbolo):
                 pni(simbolo)
+                if self['error']:
+                    break
 
 
     # Llamado "Pni"
